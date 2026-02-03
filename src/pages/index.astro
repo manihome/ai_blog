@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = await Astro.glob("../../content/posts/*.md");
+
+const sortedPosts = posts
+  .filter((post) => post.frontmatter?.slug)
+  .sort((a, b) => {
+    const dateA = new Date(a.frontmatter.date).valueOf();
+    const dateB = new Date(b.frontmatter.date).valueOf();
+    return dateB - dateA;
+  });
+
+const formatDate = (value) =>
+  new Date(value).toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+---
+
+<BaseLayout title="" description="">
+  <section class="post-list">
+    {sortedPosts.map((post) => (
+      <article class="post-item">
+        <a class="post-title" href={`/posts/${post.frontmatter.slug}/`}>
+          {post.frontmatter.title}
+        </a>
+        <div class="post-meta">
+          <span>{formatDate(post.frontmatter.date)}</span>
+          {post.frontmatter.tags?.length ? (
+            <span class="tag-list">
+              {post.frontmatter.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </span>
+          ) : null}
+        </div>
+        {post.frontmatter.summary ? (
+          <p class="post-summary">{post.frontmatter.summary}</p>
+        ) : null}
+      </article>
+    ))}
+  </section>
+</BaseLayout>

@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = await Astro.glob("../../../content/posts/*.md");
+
+export async function getStaticPaths() {
+  return posts
+    .filter((post) => post.frontmatter?.slug)
+    .map((post) => ({
+      params: { slug: post.frontmatter.slug },
+      props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content, frontmatter } = post;
+
+const formatDate = (value) =>
+  new Date(value).toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.summary}>
+  <article class="article">
+    <a class="back-link" href="/">返回文章列表</a>
+    <h1>{frontmatter.title}</h1>
+    <div class="post-meta">
+      <span>{formatDate(frontmatter.date)}</span>
+      {frontmatter.tags?.length ? (
+        <span class="tag-list">
+          {frontmatter.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </span>
+      ) : null}
+    </div>
+    <div class="article-content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
