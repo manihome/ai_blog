@@ -3,7 +3,7 @@ backend:
   repo: manihome/ai_blog
   branch: main
   auth_type: pkce
-  app_id: "YOUR_GITHUB_OAUTH_CLIENT_ID"
+  app_id: "Ov23liJ1KaRvBzluL6k6"
 
 publish_mode: simple
 
